@@ -12,6 +12,11 @@
         {
             "type": "solidity",
             "request": "launch",
+            "name": "Debug Solidity (via contract entry point)"
+        },
+        {
+            "type": "solidity",
+            "request": "launch",
             "name": "Debug Solidity"
         }
     ]
