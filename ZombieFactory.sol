@@ -1,7 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >= 0.8.0;
 
-contract ZombieFactory{
+import "./ownable.sol";
+import "./safemath.sol";
+
+contract ZombieFactory is Ownable {
+
+    using SafeMath for uint256;
+    using SafeMath32 for uint16;
+    using SafeMath16 for uint32;
+    
     event NewZombie(uint zombieId, string name, uint dna);
     
     uint dnaDigit = 16;
@@ -10,8 +18,11 @@ contract ZombieFactory{
     struct Zombie {
         string name;
         uint dna;
-        // uint health;
-        // bool isAlive;
+        uint32 level;
+        uint32 readyTime;
+        uint16 winCount;
+        uint16 lossCount;
+
     }
 
     Zombie[] public zombies;
@@ -20,11 +31,11 @@ contract ZombieFactory{
     mapping(address => uint) ownerZombieCount;
 
     function _createZombie(string memory _name, uint _dna) internal { 
-        zombies.push(Zombie(_name, _dna)); // Push the zombie into the array
+        zombies.push(Zombie(_name, _dna, 1, uint32(now + cooldownTime)), 0, 0) -1; // Push the zombie into the array
         uint id = zombies.length - 1;      // Get the index of the newly created zombie
 
         zombieToOwner[id] = msg.sender;
-        ownerZombieCount[msg.sender]++;
+        ownerZombieCount[msg.sender] = ownerZombieCount[msg.sender].add(1);
         emit NewZombie(id, _name, _dna);   // Emit the event with the zombie ID
     }
 
